@@ -1,0 +1,35 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: laravel-app-ingress
+  namespace: argocd-example
+  annotations:
+    cert-manager.io/cluster-issuer: letsencrypt-prod
+    nginx.ingress.kubernetes.io/rewrite-target: /
+spec:
+  ingressClassName: nginx
+  rules:
+  - host: laravel-app.codeware.local
+    http:
+      paths:
+      - path: /
+        pathType: Prefix
+        backend:
+          service:
+            name: laravel-app-service
+            port:
+              number: 80
+  - host: laravel-app.codeware.icu
+    http:
+      paths:
+      - path: /
+        pathType: Prefix
+        backend:
+          service:
+            name: laravel-app-service
+            port:
+              number: 80                
+  tls:
+  - hosts:
+    - laravel-app.codeware.icu 
+    secretName: letsencrypt-production
